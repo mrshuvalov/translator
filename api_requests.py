@@ -1,5 +1,4 @@
 import re
-import random
 import json
 from urllib.parse import urlencode, quote
 from typing import List, Tuple
@@ -7,23 +6,14 @@ from typing import List, Tuple
 import requests
 from selenium import webdriver
 
-from utils import extract_value
-
-
-def generate_request_id():
-    """Generate a random request ID"""
-    return 1000 + int(random.randint(1, 100) * 9000)
+from utils import extract_value, generate_request_id
+from settings import GOOGLE_URL
 
 
 class APIRequests:
     """
     A translator that leverages Google Translate's API endpoint.
-
-    Attributes:
-    url (str): Google Translate base URL
     """
-
-    url = 'https://translate.google.com'
 
     def get_google_translate_page(self, word: str, lang: str) -> str:
         """
@@ -36,8 +26,9 @@ class APIRequests:
         Returns:
         str: Google Translate page source
         """
-        driver = webdriver.Chrome()
-        driver.get(f"{self.url}/?sl=en&tl={lang}&text={word}&op=translate")
+        options = webdriver.ChromeOptions()
+        driver = webdriver.Remote(command_executor='http://chrome:4444/wd/hub', options=options)
+        driver.get(f"{GOOGLE_URL}/?sl=en&tl={lang}&text={word}&op=translate")
         return driver.page_source
 
     def _get_batch_url(self, page: str) -> str:
@@ -52,7 +43,7 @@ class APIRequests:
             '_reqid': generate_request_id(),
             'rt': 'c'
         }
-        return self.url + '/_/TranslateWebserverUi/data/batchexecute?' + urlencode(data)
+        return GOOGLE_URL + '/_/TranslateWebserverUi/data/batchexecute?' + urlencode(data)
 
     def fetch_translation(self, page: str, word: str, target_lang: str) -> Tuple[str, List[Tuple[str, str]]]:
         """

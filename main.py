@@ -8,12 +8,12 @@ import motor.motor_asyncio
 
 from translate_handler import TranslateHandler
 from models import WordInputModel, WordModel
+from settings import MONGO_DETAILS
 
 
 Log_Format = '%(asctime)s %(levelname)-8s %(name)-17s %(message)s'
 logging.basicConfig(filename='app.log', level=logging.DEBUG, format=Log_Format)
 
-MONGO_DETAILS = "mongodb://admin:admin@mongo:27017"
 
 app = FastAPI()
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
@@ -39,6 +39,8 @@ async def create_word(word: WordInputModel = Body(...)):
         return JSONResponse(status_code=status.HTTP_200_OK, content=translation)
     translator = TranslateHandler()
     res = translator.get_translation_obj(word=word.word, lang=word.lang)
+    if not res.definitions and not res.examples and not res.synonyms and not res.translations:
+        raise HTTPException(status_code=404, detail="No translation found. Please, check word and language")
     new_word = await db["words"].insert_one(jsonable_encoder(res))
     created_word = await db["words"].find_one({"_id": new_word.inserted_id})
     logging.debug(f'New word successfully created with ID: {new_word.inserted_id}')
@@ -83,7 +85,7 @@ async def delete_word(word: str):
         A message confrming that the word has been deleted
     '''
     logging.debug(f'Need to delete: {word}')
-    delete_result = await db["words"].delete_one({"_name": word})
+    delete_result = await db["words"].delete_one({"name": word})
 
     if delete_result.deleted_count == 1:
         logging.debug(f'Word {word} was successfully deleted')

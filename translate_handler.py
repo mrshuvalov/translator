@@ -2,6 +2,8 @@ from api_requests import APIRequests
 from models import WordModel
 from utils import get_nested_object
 
+from fastapi import HTTPException
+
 
 class TranslateHandler:
     """
@@ -21,7 +23,7 @@ class TranslateHandler:
         """
         api_requests = APIRequests()
         page = api_requests.get_google_translate_page(word=word, lang=lang)
-        return api_requests.get_raw_translation_object(page=page, word=word, lang=lang)
+        return api_requests.fetch_translation(page=page, word=word, target_lang=lang)
 
     def get_translation_obj(self, word, lang):
         """
@@ -39,7 +41,7 @@ class TranslateHandler:
         """
         raw_object = self.get_translation_info(word=word, lang=lang)
         if len(raw_object) < 4:
-            raise Exception('No translation')
+            return WordModel(name=word, lang=lang, translations=[], synonyms=[], definitions=[], examples=[])
 
         translations, synonyms = self.set_detailed_translations(raw_object)
         unique_synonyms = list(set(synonyms))

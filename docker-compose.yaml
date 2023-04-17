@@ -1,4 +1,5 @@
 version: '3.1' #format version for this docker compose file
+
 services:
   mongo-container:
     image: mongo:4.0.4
@@ -19,9 +20,15 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '8080:8080'
+      - '80:80'
     depends_on:
       - mongo-container
+    
+  chrome:
+    image: selenium/standalone-chrome:latest
+    hostname: chrome
+    privileged: true
+    shm_size: 2g
 
 volumes:
   mongo-volume:

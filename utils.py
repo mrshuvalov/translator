@@ -1,4 +1,5 @@
 import re
+import random
 import functools
 from typing import Any, Optional
 
@@ -18,4 +19,8 @@ def extract_value(string: str, pattern: str) -> Optional[str]:
     if match:
         return match.group(0).replace(f'"{pattern}":"', '')[:-1]
     return None
+
+def generate_request_id():
+    """Generate a random request ID"""
+    return 1000 + int(random.randint(1, 100) * 9000)
 
