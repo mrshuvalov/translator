@@ -18,6 +18,7 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
+
 class WordModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     lang: Optional[str] = Field(...)
@@ -34,12 +35,19 @@ class WordModel(BaseModel):
         schema_extra = {
             "example": {
                 "name": "challenge",
-                "definitions": ["a call to take part in a contest or competition, especially a duel", "an objection or query as to the truth of something, often with an implicit demand for proof"],
+                "definitions": [
+                    "a call to take part in a contest or competition, especially a duel",
+                    "an objection or query as to the truth of something, often with an implicit demand for proof",
+                ],
                 "synonyms": ["Вызов", "Проблема"],
                 "translations": ["Испытание"],
-                "examples": ["he needed something both to challenge his skills and to regain his crown as the king of the thriller", "I heard the challenge “Who goes there?”"],
+                "examples": [
+                    "he needed something both to challenge his skills and to regain his crown as the king of the thriller",
+                    "I heard the challenge “Who goes there?”",
+                ],
             }
         }
+
 
 class WordInputModel(BaseModel):
     word: str

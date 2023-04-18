@@ -15,7 +15,5 @@ DELETE /{word} :
   Receives a word as a path parameter and uses the "words" collection to delete the word from the database if exists. The endpoint returns a message confirming the successful deletion of the word.
   
 TODO:
-1. Create configuration file .env with main constants 
-2. Create settings.py with constants from .env
-3. Create tests for translation mocking webdriver call
-4. Create and use chrome as a third service in docker-compose to use selenium 
+1. Optimize webdriver for multiple launches
+2. Create tests to test page parsing logic 
