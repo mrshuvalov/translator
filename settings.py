@@ -5,3 +5,4 @@ load_dotenv()
 
 GOOGLE_URL = os.getenv("GOOGLE_URL")
 MONGO_DETAILS = os.getenv("MONGO_DETAILS")
+LANGUAGE_CODES = os.getenv("LANGUAGE_CODES")

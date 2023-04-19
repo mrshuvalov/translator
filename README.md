@@ -15,5 +15,6 @@ DELETE /{word} :
   Receives a word as a path parameter and uses the "words" collection to delete the word from the database if exists. The endpoint returns a message confirming the successful deletion of the word.
   
 TODO:
-1. Optimize webdriver for multiple launches
+1. Get language codes from google page
 2. Create tests to test page parsing logic 
+

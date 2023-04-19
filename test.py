@@ -203,9 +203,7 @@ def test_create_word_not_found(test_client):
     ):
         response = test_client.post("/translate_word", json=word_input)
         assert response.status_code == 404
-        assert response.json() == {
-            "detail": "No translation found. Please, check word and language"
-        }
+        assert response.json() == {"detail": "No translation found. Please, check word"}
 
 
 def test_show_word(test_client):

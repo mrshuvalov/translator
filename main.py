@@ -1,5 +1,6 @@
 import logging
 from typing import List, Optional
+import time
 
 from fastapi import FastAPI, HTTPException, status, Body
 from fastapi.responses import Response, JSONResponse
@@ -8,7 +9,7 @@ from pymongo import MongoClient
 
 from translate_handler import TranslateHandler
 from models import WordInputModel, WordModel
-from settings import MONGO_DETAILS
+from settings import MONGO_DETAILS, LANGUAGE_CODES
 
 
 Log_Format = "%(asctime)s %(levelname)-8s %(name)-17s %(message)s"
@@ -36,6 +37,11 @@ def create_word(word: WordInputModel = Body(...)):
         A JSON object containing the word and its translation
     """
     logging.debug(f"Creating new word {word.word} in language {word.lang}")
+    if word.lang not in LANGUAGE_CODES:
+        raise HTTPException(
+            status_code=404,
+            detail="No translation found. Please, check language",
+        )
     translation = db.find_one({"name": word.word, "lang": word.lang})
     if translation:
         logging.debug(
@@ -52,7 +58,7 @@ def create_word(word: WordInputModel = Body(...)):
     ):
         raise HTTPException(
             status_code=404,
-            detail="No translation found. Please, check word and language",
+            detail="No translation found. Please, check word",
         )
     new_word = db.insert_one(jsonable_encoder(res))
     created_word = db.find_one({"_id": new_word.inserted_id})

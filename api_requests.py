@@ -4,7 +4,6 @@ from urllib.parse import urlencode, quote
 from typing import List, Tuple
 
 import requests
-from selenium import webdriver
 
 from utils import extract_value, generate_request_id
 from settings import GOOGLE_URL
@@ -26,12 +25,13 @@ class APIRequests:
         Returns:
         str: Google Translate page source
         """
-        options = webdriver.ChromeOptions()
-        driver = webdriver.Remote(
-            command_executor="http://chrome:4444/wd/hub", options=options
-        )
-        driver.get(f"{GOOGLE_URL}/?sl=en&tl={lang}&text={word}&op=translate")
-        return driver.page_source
+        url = f"{GOOGLE_URL}/?sl=en&tl={lang}&text={word}&op=translate"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+        }
+
+        response = requests.get(url=url, headers=headers)
+        return response.content.decode("utf-8")
 
     def _get_batch_url(self, page: str) -> str:
         """Extracts batch URL from page source"""

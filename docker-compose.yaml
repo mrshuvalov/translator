@@ -23,12 +23,6 @@ services:
       - '80:80'
     depends_on:
       - mongo-container
-    
-  chrome:
-    image: selenium/standalone-chrome:latest
-    hostname: chrome
-    privileged: true
-    shm_size: 2g
 
 volumes:
   mongo-volume:

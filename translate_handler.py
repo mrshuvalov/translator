@@ -2,15 +2,13 @@ from api_requests import APIRequests
 from models import WordModel
 from utils import get_nested_object
 
-from fastapi import HTTPException
-
 
 class TranslateHandler:
     """
     Handler to translate a word in a given language.
     """
 
-    def get_translation_info(self, word, lang):
+    def get_translation_info(self, word: str, lang: str):
         """
         Get the raw translation object from Google Translate API.
 
@@ -25,7 +23,7 @@ class TranslateHandler:
         page = api_requests.get_google_translate_page(word=word, lang=lang)
         return api_requests.fetch_translation(page=page, word=word, target_lang=lang)
 
-    def get_translation_obj(self, word, lang):
+    def get_translation_obj(self, word: str, lang: str):
         """
         Get the WordModel object with translated word information.
 
@@ -34,10 +32,8 @@ class TranslateHandler:
             lang: The language code to translate to.
 
         Returns:
-            The WordModel object with translations, synonyms, definitions, and examples.
+            The WordModel object with translations, synonyms, definitions, and examples. If translations, synonyms, definitions and examples are empty it means that there is something wrong with word
 
-        Raises:
-            Exception: If there is no translation available.
         """
         raw_object = self.get_translation_info(word=word, lang=lang)
         if len(raw_object) < 4:
